@@ -169,7 +169,7 @@ class ImageGenServer {
             tools: [
                 {
                     name: 'generate_image',
-                    description: 'Generate an image using Stable Diffusion. IMPORTANT: Generated images are saved to the local filesystem where the Stable Diffusion server runs. Claude CANNOT access these files - they are saved to the user\'s local machine and must be manually retrieved from the output directory. This tool only returns the file path on the local filesystem, not the actual image data.',
+                    description: 'Generate an image using Stable Diffusion.',
                     inputSchema: {
                         type: 'object',
                         properties: {
@@ -336,6 +336,7 @@ class ImageGenServer {
                         if (!response.data.images?.length) throw new Error('No images generated');
 
                         const results = [];
+                        const images = [];
                         for (const imageData of response.data.images) {
                             const base64Data = imageData.includes(',') ? imageData.split(',')[1] : imageData;
                             const pngInfoResponse = await this.axiosInstance.post('/sdapi/v1/png-info', { image: `data:image/png;base64,${imageData}` });
@@ -348,13 +349,21 @@ class ImageGenServer {
                                 .toFile(outputPath);
 
                             results.push({ path: outputPath, parameters: pngInfoResponse.data.info });
+                            images.push({ base64: base64Data });
                         }
 
+                        const responses = [];
+
+                        responses.push({
+                            type: 'text',
+                            text: `Image generation complete. Files saved to local filesystem:\n\n${JSON.stringify(results, null, 2)}\n\nIMPORTANT: These files will be sent in subsequent responses.`
+                        });
+
+                        for (const image of images) {
+                            responses.push({type: 'image', data: image.base64, mimeType: 'image/png'});
+                        }
                         return {
-                            content: [{
-                                type: 'text',
-                                text: `Image generation complete. Files saved to local filesystem:\n\n${JSON.stringify(results, null, 2)}\n\nIMPORTANT: These files are on the user's local machine at the paths shown above. Claude cannot access or view these files. The user must manually retrieve them from the output directory.`
-                            }]
+                            content: responses
                         };
                     }
 
