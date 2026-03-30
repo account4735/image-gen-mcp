@@ -59,6 +59,7 @@ interface SDAPIPayload {
     restore_faces?: boolean;
     tiling?: boolean;
     distilled_cfg_scale?: number;
+    save_images?: boolean;
 }
 
 interface ModelInfo {
@@ -327,7 +328,8 @@ class ImageGenServer {
                             distilled_cfg_scale: args.distilled_cfg_scale || 3.5,
                             scheduler: args.scheduler_name || 'Simple',
                             tiling: !!args.tiling,
-                            restore_faces: !!args.restore_faces
+                            restore_faces: !!args.restore_faces,
+                            save_images: true,
                         };
 
                         const response = await this.axiosInstance.post('/sdapi/v1/txt2img', payload);
