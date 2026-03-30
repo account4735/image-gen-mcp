@@ -6,7 +6,11 @@
   "scripts": {
     "build": "tsc && node -e \"require('fs').chmodSync('build/index.js', '755')\"",
     "watch": "tsc -w",
-    "start": "node build/index.js"
+    "start": "node build/index.js",
+    "install": "npm run build"
+  },
+  "bin": {
+    "image-gen": "./build/index.js"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "latest",
