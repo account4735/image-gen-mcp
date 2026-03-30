@@ -13,11 +13,11 @@
     "image-gen": "./build/index.js"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "latest",
+    "@modelcontextprotocol/sdk": "1.26.0",
     "@types/node": "latest",
     "@types/sharp": "latest",
-    "axios": "latest",
-    "form-data": "latest",
+    "axios": "1.13.5",
+    "form-data": "4.0.4",
     "sharp": "latest",
     "typescript": "^5.8.2"
   }
