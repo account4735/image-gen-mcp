@@ -333,6 +333,7 @@ class ImageGenServer {
                         };
 
                         const response = await this.axiosInstance.post('/sdapi/v1/txt2img', payload);
+                        if (response.status !== 200) throw new Error(`HTTP error: status: ${response.status}, data: ${response.data}`);
                         if (!response.data.images?.length) throw new Error('No images generated');
 
                         const results = [];
